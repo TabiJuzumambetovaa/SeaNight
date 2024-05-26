@@ -10,6 +10,10 @@ enum AppIcons {
   info,
   coins,
   close,
+  up,
+  down,
+  left,
+  right,
 }
 
 class AppIcon extends StatelessWidget {

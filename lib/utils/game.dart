@@ -1,7 +1,11 @@
+
+
 import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_sea_night/utils/app_colors.dart';
 import 'package:gap/gap.dart';
+
+import 'app_colors.dart';
 
 enum CellType {
   empty,
@@ -12,11 +16,15 @@ enum CellType {
   unluckyCoin,
   worm,
   shark,
-  special
+  special,
+  right,
+  down,
+  left,
+  up
 }
 
 class Cell {
-  final CellType type;
+  CellType type;
   bool isRevealed;
 
   Cell(this.type) : isRevealed = false;
@@ -34,36 +42,41 @@ class Game {
   bool antiJackpotResult = false;
 
   Game()
-      : matrix = List.generate(
-            10, (_) => List.generate(6, (_) => Cell(CellType.empty))) {
-    _initializeMatrix();
-  }
+    : matrix = List.generate(
+          10, (_) => List.generate(6, (_) => Cell(CellType.empty))) {
+  _initializeMatrix();
+}
 
-  void _initializeMatrix() {
-    Random random = Random();
+void _initializeMatrix() {
+  Random random = Random();
 
-    List<CellType> cells = [];
-    cells.addAll(List.filled(26, CellType.empty));
-    cells.addAll(List.filled(12, CellType.gold));
-    cells.addAll(List.filled(6, CellType.emerald));
-    cells.addAll(List.filled(3, CellType.diamond));
-    cells.addAll(List.filled(3, CellType.luckyCoin));
-    cells.addAll(List.filled(3, CellType.unluckyCoin));
-    cells.addAll(List.filled(3, CellType.worm));
-    cells.addAll(List.filled(4, CellType.shark));
+  List<CellType> cells = [];
+  cells.addAll(List.filled(26, CellType.empty));
+  cells.addAll(List.filled(12, CellType.gold));
+  cells.addAll(List.filled(6, CellType.emerald));
+  cells.addAll(List.filled(3, CellType.diamond));
+  cells.addAll(List.filled(3, CellType.luckyCoin));
+  cells.addAll(List.filled(3, CellType.unluckyCoin));
+  cells.addAll(List.filled(3, CellType.worm));
+  cells.addAll(List.filled(4, CellType.shark));
 
-    cells.shuffle(random);
+  cells.shuffle(random);
 
-    for (int i = 0; i < rows; i++) {
-      for (int j = 0; j < columns; j++) {
-        if (i == 0 && j == 0) {
-          matrix[i][j] = Cell(CellType.special);
-        } else {
-          matrix[i][j] = Cell(cells.removeLast());
-        }
+  for (int i = 0; i < rows; i++) {
+    for (int j = 0; j < columns; j++) {
+      if (i == 0 && j == 0) {
+        matrix[i][j] = Cell(CellType.special);
+      } else if (i == 0 && j == 1) {
+        matrix[i][j] = Cell(CellType.right);
+      } else if (i == 1 && j == 0) {
+        matrix[i][j] = Cell(CellType.down);
+      } else {
+        matrix[i][j] = Cell(cells.removeLast());
       }
     }
   }
+}
+
 
   void revealCell(int row, int column, BuildContext context) {
     if (row < 0 || row >= rows || column < 0 || column >= columns) return;
@@ -97,17 +110,57 @@ class Game {
         break;
       case CellType.empty:
         break;
+      case CellType.right:
+        break;
+      case CellType.down:
+        break;
+      case CellType.left:
+        break;
+      case CellType.up:
+     
     }
   }
 
   void movePlayer(int newRow, int newColumn, BuildContext context) {
-    if (newRow < 0 || newRow >= rows || newColumn < 0 || newColumn >= columns) {
-      return;
-    }
-    playerRow = newRow;
-    playerColumn = newColumn;
-    revealCell(newRow, newColumn, context);
+  if (newRow < 0 || newRow >= rows || newColumn < 0 || newColumn >= columns) {
+    return;
   }
+
+  if (playerRow == 0 && playerColumn == 0) {
+    matrix[0][0].type = CellType.special; 
+  }
+
+  playerRow = newRow;
+  playerColumn = newColumn;
+
+  revealCell(playerRow, playerColumn, context);
+}
+
+void movePlayerLeft(BuildContext context) {
+  int newRow = playerRow;
+  int newColumn = playerColumn - 1;
+  movePlayer(newRow, newColumn, context);
+}
+
+void movePlayerRight(BuildContext context) {
+  int newRow = playerRow;
+  int newColumn = playerColumn + 1;
+  movePlayer(newRow, newColumn, context);
+}
+
+void movePlayerUp(BuildContext context) {
+  int newRow = playerRow - 1;
+  int newColumn = playerColumn;
+  movePlayer(newRow, newColumn, context);
+}
+
+void movePlayerDown(BuildContext context) {
+  int newRow = playerRow + 1;
+  int newColumn = playerColumn;
+  movePlayer(newRow, newColumn, context);
+}
+
+
 
   bool isGameOver() {
     return playerRow == 0 && playerColumn == 0;
