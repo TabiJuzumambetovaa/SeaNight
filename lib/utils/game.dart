@@ -191,7 +191,18 @@ class Game {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const Text('Jackpot Game');
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pop();
+        });
+        return const Center(
+          child: Text(
+            'Jackpot Game',
+            style: TextStyle(
+                color: AppColors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w700),
+          ),
+        );
       },
     );
   }
@@ -200,7 +211,18 @@ class Game {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const Text('Anti-Jackpot Game');
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(context).pop();
+        });
+        return const Center(
+          child: Text(
+            'Anti-Jackpot Game',
+            style: TextStyle(
+                color: AppColors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.w700),
+          ),
+        );
       },
     );
   }
